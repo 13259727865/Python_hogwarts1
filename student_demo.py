@@ -1,4 +1,5 @@
 import json
+import sys
 
 
 class StudentManage:
@@ -210,5 +211,6 @@ class StudentManage:
 
 
 if __name__ == '__main__':
+    print(sys.platform)
     studio = StudentManage()
     studio.main()
