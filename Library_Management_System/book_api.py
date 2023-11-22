@@ -1,8 +1,8 @@
 import pymysql
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, make_response, jsonify
 
 book_bp = Blueprint(name="book", import_name=__name__, url_prefix="/book")
-db_con = pymysql.Connect(host="192.168.1.30", port=3306, user="root", database="bms")
+db_con = pymysql.Connect(host="192.168.1.30", port=3306, user="root", database="bms",charset="utf8")
 
 def select_all():
     book_list = []
@@ -51,7 +51,10 @@ def add_book():
         cur.execute(get_all_sql,(name,price,summary,quantity))
         db_con.commit()
         cur.close()
-        return {"msg":"添加成功","data":select_all()}
+        response = make_response({"msg":"添加成功","data":select_all()})
+        # response.headers["Content-Type:"]="application/json; charset=utf-8"
+
+        return response
 
 
 @book_bp.route("/change/<int:bookid>",methods=["GET","POST"])
@@ -106,6 +109,7 @@ def search(searchkey):
     all_book = cur.fetchall()
     if all_book:
         for i in all_book:
+            print(i)
             book_dict = {}
             book_dict["id"] = i[0]
             book_dict["name"] = i[1]
@@ -113,4 +117,8 @@ def search(searchkey):
             book_dict["summary"] = i[3]
             book_dict["quantity"] = i[4]
             book_list.append(book_dict)
-    return book_list
+    response = make_response(jsonify(book_list))
+    response.headers["Content-Type"] = "application/json;charset=UTF-8"
+
+
+    return response

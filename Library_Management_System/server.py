@@ -19,7 +19,11 @@ from Library_Management_System.book_api import book_bp
 
 
 app = Flask(import_name=__name__)
+# app.config['JSON_AS_ASCII'] = False
+app.json.ensure_ascii = False
+# app.config['JSONIFY_MIMETYPE'] = "application/json;charset=utf-8"
 
 if __name__ == '__main__':
     app.register_blueprint(book_bp)
+
     app.run(debug=True)
