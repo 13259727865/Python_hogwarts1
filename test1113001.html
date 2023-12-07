@@ -1,0 +1,50 @@
+
+
+<!DOCTYPE html>
+<html>  
+<head>  
+  <title>STL Viewer</title>  
+  <style>  
+    #viewer {  
+      width: 300px;  
+      height: 300px;  
+      border: 1px solid #ccc;  
+      background-color: #f0f0f0;  
+    }  
+  </style>
+  <script src="https://threejs.org/examples/jsm/three.js"></script>
+</head>  
+<body>  
+  <h1>STL Viewer</h1>  
+  <input type="file" id="fileInput" accept=".stl">  
+  <div id="viewer"></div>  
+  
+  <script>  
+    function loadSTL(event) {  
+      const file = event.target.files[0];  
+      const reader = new FileReader();  
+      reader.onload = function(event) {  
+        const data = new Float32Array(event.target.result);  
+        const geometry = new THREE.BufferGeometry();  
+        geometry.setAttribute('position', new THREE.BufferAttribute(data, 3));  
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });  
+        const mesh = new THREE.Mesh(geometry, material);  
+        scene.add(mesh);  
+      };  
+      reader.readAsArrayBuffer(file);  
+    }  
+  
+    const scene = new THREE.Scene();  
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);  
+    const renderer = new THREE.WebGLRenderer();  
+    renderer.setSize(window.innerWidth, window.innerHeight);  
+    document.getElementById('viewer').appendChild(renderer.domElement);  
+    camera.position.z = 5;  
+    const animate = function() {  
+      requestAnimationFrame(animate);  
+      renderer.render(scene, camera);  
+    };  
+    animate();  
+  </script>  
+</body>  
+</html>

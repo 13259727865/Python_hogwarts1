@@ -2,9 +2,113 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>add_book</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        /* *{
+            margin: 0;
+            padding: 0;
+        } */
+        .main {
+            margin: 0 auto;
+            border: 1px solid black;
+            width: 1200px;
+            margin-top: 100px;
+
+        }
+
+        .title {
+            text-align: center;
+            color: red;
+            border-bottom: 1px solid black;
+            /* width: 1200px; */
+            line-height: 90px;
+        }
+
+        .data {
+            width: 300px;
+            margin: 0 auto;
+        }
+
+        .add_data {
+
+            width: auto;
+            padding: 250px 20px;
+
+
+        }
+
+        .add_data label {
+            width: 70px;
+            line-height: 30px;
+            display: inline-block;
+
+        }
+
+        .add_button {
+            width: 100%;
+            text-align: center;
+            margin-top: 10px;
+
+
+        }
+    </style>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        // $(function(){
+        //     // 发起一个请求去获取表格中的数据
+        //     $(".add_button").click(function(){$.post("http://127.0.0.1:5000/book/add",{name:"we",price:8,summary:"23",quantity:23}, function(data){
+        //         console.log(data)
+        //     })})
+        // });
+        $(function () {
+            // 发起一个请求去获取表格中的数据
+            $(".add_button").click(function () {
+                $.ajax({
+                        url: 'http://127.0.0.1:5000/book/add',
+                        type: 'POST',
+                        // headers: {
+                        //     'Content-Type': 'application/json'
+                        // },
+                        dataType: "json",
+                        contentType:'application/json;charset=utf-8',
+                        data: JSON.stringify({name: "we", price: 8, summary: "23", quantity: 23}),
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    }
+                )
+            })
+        });
+
+    </script>
 </head>
 <body>
-  <p>添加图书页面展示</p>
+<div class="main">
+    <div class="title">
+        <h1>添加书籍1</h1>
+    </div>
+    <div class="add_button">
+        <button>添加</button>
+    </div>
+    <div class="add_data">
+        <form class="data" action="http://127.0.0.1:5000/book/add" method="post">
+            <label for="姓名">名字:</label><input type="text" name="name"><br>
+            <label for="年龄">价格:</label><input type="text" name="price"><br>
+            <label for="概要">概要:</label><input type="text" name="summary"><br>
+            <!-- <label for="性别">性别:</label><input type="radio" value="1" name="sex">男
+                                            <input type="radio" value="2" name="sex">女<br>   -->
+            <label for="编号">库存:</label><input type="text" name="quantity"><br>
+            <div class="add_button">
+                <button type="submit">添加</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
 </body>
 </html>
+

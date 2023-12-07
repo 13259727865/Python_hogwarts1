@@ -25,9 +25,7 @@ def select_all():
 
 @book_bp.route("/book_list", methods=["GET", "POST"])
 def get_list():
-    if request.method == "GET":
-        return render_template("get_list.html")
-    else:
+
         book_list = select_all()
 
         return book_list
@@ -35,7 +33,7 @@ def get_list():
 
 @book_bp.route("/add", methods=["GET", "POST"])
 def add_book():
-    print(request.args)
+
     if request.method == "GET":
         return render_template("add_book.html")
     else:
@@ -43,11 +41,12 @@ def add_book():
                 insert into book (`name`, `price`, `summary`, `quantity`) value (%s,%s,%s,%s)
                 """
         cur = db_con.cursor()
-        name = request.args["name"]
-        price = request.args["price"]
-        summary = request.args["summary"]
-        quantity = request.args["quantity"]
-        print(name)
+        name = request.values.get("name")
+        summary = request.values.get("summary")
+        price = request.values.get("price")
+        quantity = request.values.get("quantity")
+
+
         cur.execute(get_all_sql,(name,price,summary,quantity))
         db_con.commit()
         cur.close()
@@ -98,27 +97,32 @@ def del_book(book_id):
     cur.close()
     return {"msg": "删除成功", "data": select_all()}
 
-@book_bp.route("/search/<searchkey>")
-def search(searchkey):
-    book_list = []
-    get_all_sql = f"""
-                             select * from book where name like '%{searchkey}%' or summary like '%{searchkey}%'
-                               """
+@book_bp.route("/search")
+def search():
+    # print(searchkey)
     cur = db_con.cursor()
-    cur.execute(get_all_sql)
-    all_book = cur.fetchall()
-    if all_book:
-        for i in all_book:
-            print(i)
-            book_dict = {}
-            book_dict["id"] = i[0]
-            book_dict["name"] = i[1]
-            book_dict["price"] = i[2]
-            book_dict["summary"] = i[3]
-            book_dict["quantity"] = i[4]
-            book_list.append(book_dict)
-    response = make_response(jsonify(book_list))
-    response.headers["Content-Type"] = "application/json;charset=UTF-8"
+    searchkey = request.values.get("searchkey")
+    if not searchkey:
+        return select_all()
+    else:
+        book_list = []
+        get_all_sql = f"""
+                                 select * from book where name like '%{searchkey}%' or summary like '%{searchkey}%'
+                                   """
+
+        cur.execute(get_all_sql)
+        all_book = cur.fetchall()
+        if all_book:
+            for i in all_book:
+                print(i)
+                book_dict = {}
+                book_dict["id"] = i[0]
+                book_dict["name"] = i[1]
+                book_dict["price"] = i[2]
+                book_dict["summary"] = i[3]
+                book_dict["quantity"] = i[4]
+                book_list.append(book_dict)
+        response = make_response(jsonify(book_list))
 
 
-    return response
+        return response
