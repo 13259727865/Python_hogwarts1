@@ -7,6 +7,7 @@ import yaml
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.expected_conditions import element_to_be_selected
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -34,7 +35,9 @@ class TestAddMwmber:
 
         #手动扫码并获取cookie存储
         self.wait_action = WebDriverWait(self.driver, 30)
-        self.wait_action.until(EC.presence_of_element_located((By.ID, "logout")))
+        # self.wait_action.until(EC.presence_of_element_located((By.ID, "logout")))
+        logoutbutton = self.driver.find_element(By.ID, "logout")
+        self.wait_action.until(element_to_be_selected(logoutbutton))
         cookie = self.driver.get_cookies()
         with open("cookie.yaml","w",encoding="utf-8") as cookie_file:
             yaml.safe_dump(cookie,cookie_file)
